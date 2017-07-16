@@ -42,9 +42,12 @@
 ;Fuzzy Set Union AUB = {max(da(x),db(x)) / x | x is an element U}
 (defun funion (x y)
 	(if (null x) '()
-		(if (> (deg x) (deg y))
-			(cons (makepair (mem x) (deg x)) (funion (cdr x) (cdr y)))
-		    (cons (makepair (mem y) (deg y)) (funion (cdr x) (cdr y)))
+		(if (eql (mem x)(mem y))
+			(if (> (deg x) (deg y))
+				(cons (makepair (mem x) (deg x)) (funion (cdr x) (cdr y)))
+		    	(cons (makepair (mem y) (deg y)) (funion (cdr x) (cdr y)))
+		    )
+		    (funion x (cdr y))
 		)
 	)
 )
@@ -169,5 +172,20 @@
 	(help x (fmax (cdr x)(cadar x)))
 )
 
+#|Distance|#
+;Distance (x,y) = (|dx-dy|)/n
+;given two fuzzy sets computes the distance
+(defun modDist(x y)
+	(defun modDist2(x y c d)
+		(if (null x)
+			(/ c d)
+			(modDist2 (cdr x)(cdr y)(+ c (abs (- (cadar x)(cadar y))))(+ d 1))
+		)
+	)
+	(modDist2 x y 0 0)
+)
+
+
+			
 ;(load "//Users//nathanael//Desktop//FuzzySet.lsp")
 ;This is how to load the file on CLISP on Macintosh
